@@ -1,0 +1,94 @@
+1. The first step is to make a new project. Navigate to your projects directory and then we'll make the new project called "express-boilerplate":
+
+2. Don't forget the .gitignore file.
+
+$ echo "node_modules" > .gitignore
+
+3. Let's initialize NPM here too:
+
+$ npm init -y
+
+4. Now install the dependencies we'll need:
+
+$ npm i express morgan cors dotenv helmet
+
+5. Anticipating that we will add more files into the project, it will help with organization to keep our server code inside a directory, let's call it /src. Open your editor in this directory if you haven't already and make the ./src/app.js file using these dependencies.
+
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
+const helmet = require('helmet')
+
+const app = express()
+
+const morganOption = (process.env.NODE_ENV === 'production')
+  ? 'tiny'
+  : 'common';
+
+app.use(morgan(morganOption))
+app.use(helmet())
+app.use(cors())
+
+module.exports = app
+
+6. We've initialized the dotenv as well as adding the basic middleware and Morgan is set to be less verbose when in production.
+
+Let's add the .env file too, and ignore it.
+
+$ echo "NODE_ENV=development" > .env
+# using >> to append content
+$ echo ".env" >> .gitignore
+
+7. We've set up the app.js to export the app ready for integration testing. Now we'll need a ./src/server.js that starts our server on an appropriate port:
+
+const app = require('./app')
+
+const PORT = process.env.PORT || 8000
+
+app.listen(PORT, () => {
+  console.log(`Server listening at http://localhost:${PORT}`)
+})
+
+8. Let's set up the npm script for npm start inside package.json:
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
++   "start": "node src/server.js"
+  },
+
+  9. We should get the testing and development workflow set up too!
+
+npm i mocha chai supertest nodemon -D
+
+10. Let's sort out the scripts for dev and test:
+
+  "scripts": {
+-   "test": "echo \"Error: no test specified\" && exit 1",
++   "test": "mocha",
++   "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+
+11. Let's make a first test file as well:
+
+mkdir test
+touch test/app.spec.js
+
+12. Inside test/app.spec.js we can write a first basic test.
+
+const { expect } = require('chai')
+const supertest = require('supertest')
+const app = require('../src/app')
+
+describe('App', () => {
+  it('GET / responds with 200 containing "Hello, world!"', () => {
+    return supertest(app)
+      .get('/')
+      .expect(200, 'Hello, world!')
+  })
+})
+
+13. We can now verify this test gives the correct error:
+
+npm t

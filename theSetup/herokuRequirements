@@ -1,0 +1,57 @@
+1. When we deploy to Heroku we can use the Procfile to specify the startup command. Make the Procfile with the following content.
+
+web: node src/server.js
+
+2. And we can add the scripts for deploying as well:
+
+  "scripts": {
+    "test": "mocha --require test/setup.js",
+    "dev": "nodemon src/server.js",
+-   "start": "node src/server.js"
++   "start": "node src/server.js",
++   "predeploy": "npm audit",
++   "deploy": "git push heroku main"
+  },
+
+Don't set up a Heroku app for this project, it's just a boilerplate!
+
+Now we have scripts in place after setting up a Heroku app.
+
+3. Readme!
+One of the most vital steps is creating the README markdown file that contains instructions on how to use the boilerplate!
+
+Markdown files have the extension .md and are a format used for writing formatted text. We can make a heading level one by prefixing the line with a # or level 3 heading with ### etc...
+
+Let's add the following content to our file named README.md:
+
+# Express Boilerplate!
+
+This is a boilerplate project used for starting new projects!
+
+## Set up
+
+Complete the following steps to start a new project (NEW-PROJECT-NAME):
+
+1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
+2. `cd` into the cloned repository
+3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
+4. Install the node dependencies `npm install`
+5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
+6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+
+## Scripts
+
+Start the application `npm start`
+
+Start nodemon for the application `npm run dev`
+
+Run the tests `npm test`
+
+## Deploying
+
+When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's main branch.
+
+4. Give the contents a read over and tweak to add your own personal touches if you like!
+
+Now, you're ready to commit all these files for the project to git and make a new Github repository for express-boilerplate.
+

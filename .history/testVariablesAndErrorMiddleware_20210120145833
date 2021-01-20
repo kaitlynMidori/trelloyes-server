@@ -1,0 +1,63 @@
+1. If we add multiple test files, it would be nice if we could avoid needing to require expect and supertest in every file. We can utilize a feature of mocha to require a specific setup file we specify. Then we can add these functions as globals inside tests.
+
+Change your package.json like so:
+
+  "scripts": {
+-   "test": "mocha",
++   "test": "mocha --require test/setup.js",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
+  },
+
+2. Now make a file test/setup.js with the following content which sets two global variables.
+
+const { expect } = require('chai')
+const supertest = require('supertest')
+
+global.expect = expect
+global.supertest = supertest
+
+3. If you are using ESLint, we recommend adding the following data to your .eslintrc.js file to ensure the linter doesn't complain when you use the expect and supertest libraries globally in your test files:
+
+"globals": {
+  "supertest": true,
+  "expect": true
+}
+
+4. As you progress with libraries such as chai, you might want to install plugins that add features to chai. This file would be the ideal place to do that.
+
+Let's remove the require statements from app.spec.js.
+
+- const { expect } = require('chai')
+- const supertest = require('supertest')
+  const app = require('../src/app')
+
+  describe('App', () => {
+
+5. Now run npm t -- --watch and we should have a failing test because we changed Hello, world! to Hello, boilerplate! in the app. We can change the app.js to see this test passing again as well as automatically re-running because of the change when using -- --watch.
+
+  app.get('/', (req, res) => {
++   res.send('Hello, world!')
+-   res.send('Hello, boilerplate!')
+  })
+
+6. Stop the test watcher by pressing ctrl-c
+
+7. Our production applications should hide error messages from users and other malicious parties. We can use the same code that we used in the deploying checkpoint to provide error messages on our app.js:
+
+  app.get('/', (req, res) => {
+    res.send('Hello, world!')
+  })
+
++ app.use(function errorHandler(error, req, res, next) {
++   let response
++   if (process.env.NODE_ENV === 'production') {
++     response = { error: { message: 'server error' } }
++   } else {
++     console.error(error)
++     response = { message: error.message, error }
++   }
++   res.status(500).json(response)
++ })
+
+  module.exports = app
