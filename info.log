@@ -6,3 +6,9 @@
 {"message":"Header is required","level":"error"}
 {"message":"Header is required","level":"error"}
 {"message":"Header is required","level":"error"}
+{"message":"Header is required","level":"error"}
+{"message":"Header is required","level":"error"}
+{"message":"Header is required","level":"error"}
+{"message":"Unauthorized request to path: /","level":"error"}
+{"message":"Unauthorized request to path: /","level":"error"}
+{"message":"Unauthorized request to path: /list","level":"error"}
